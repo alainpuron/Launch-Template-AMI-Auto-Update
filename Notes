@@ -1,0 +1,21 @@
+*. This code automatically updates your AWS launch template to the latest AMI of your instance, allowing your Auto Scaling Group (ASG) to have the latest version of your instance automatically.
+*. This is useful if you have a life cycle policy to make a backup of your instance every day or hour. 
+
+---- EC2
+1. Create a launch template for your AMI and in the add the tag "AMI_Template_Update" with the value "True".
+2. Create an Auto Scaling Group for your Launch Template , once is configured , go to the details tab and then scroll to tags and add the tag "AMI_DailyUpdate" with the value of "True".
+
+
+
+---- IAM
+Create a new role and name it "Lambda-role_daily-asg-update"  (or whatever) and add "AmazonEC2FullAccess" and "AWSLambdaBasicExecutionRole" policies.
+
+---- Lambda 
+1. Create a new lambda function and name it "Automatic_AMI_Launch_Template_Update" (or whatever). Cope the code in the file and paste it.
+2. Go to configuration tab and add the role created if is not already added.
+3. Go to "add trigger" and as a source select "EventBridge" and then select or create existing rule with your trigger times.
+
+
+---- Notes 
+The code working by taking the AMI instance ID that way is there is more than one launch template each image goes to the according template.
+Make sure the AMI has the instance ID and then first AMI your select for the launch template is the AMI of the instance you want to backup.
